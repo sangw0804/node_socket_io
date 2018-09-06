@@ -7,18 +7,26 @@ const server = http.createServer(app);
 const socketIO = require("socket.io");
 const io = socketIO(server);
 
-
 const publicPath = path.join(__dirname, "../public");
 app.use(express.static(publicPath));
 
 io.on("connection", (socket) => {
-    console.log("new client connected!");
+    console.log("client connect to server!");
+
+    socket.on("createMessage", (message) => {
+        console.log(message);
+    });
 
     socket.on("disconnect", () => {
-        console.log("client disconnected!");
+        console.log("client disconnect from server!!");
+    });
+
+    socket.emit("newMessage", {
+        from: "sangwoo",
+        text: "hi man",
+        createdAt: new Date().getTime()
     });
 });
-
 
 const port = process.env.PORT || 3000;
 server.listen(port , () => {
