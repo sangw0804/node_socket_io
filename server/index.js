@@ -15,17 +15,21 @@ io.on("connection", (socket) => {
 
     socket.on("createMessage", (message) => {
         console.log(message);
+        io.emit("newMessage", {
+            ...message,
+            createdAt: new Date().toString()
+        });
     });
 
     socket.on("disconnect", () => {
         console.log("client disconnect from server!!");
     });
 
-    socket.emit("newMessage", {
-        from: "sangwoo",
-        text: "hi man",
-        createdAt: new Date().getTime()
-    });
+    // socket.emit("newMessage", {
+    //     from: "sangwoo",
+    //     text: "hi man",
+    //     createdAt: new Date().getTime()
+    // });
 });
 
 const port = process.env.PORT || 3000;
