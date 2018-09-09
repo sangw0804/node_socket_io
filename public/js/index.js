@@ -2,9 +2,12 @@ const socket = io();
 
 socket.on("newMessage", (message) => {
     let formatTime = moment(message.createdAt).format("h:mm a");
-    console.log(message);
-    let newMsg = $("<li></li>");
-    newMsg.text(`${message.from} ${formatTime} : ${message.text}`);
+    let template = $("#message-template").html();
+    let newMsg = Mustache.render(template, {
+        from: message.from,
+        createdAt: formatTime,
+        text: message.text
+    });
     $("#messages").append(newMsg);
 });
 
@@ -43,11 +46,13 @@ locBtn.on("click", (e) => {
 
 socket.on("newLocationMessage", (data) => {
     let formatTime = moment(data.createdAt).format("h:mm a");
-    let li = $("<li></li>");
-    let a = $("<a target='_blank'>My Location!</a>");
 
-    a.attr("href", data.url);
-    li.text(`${data.from} ${formatTime} : `);
-    li.append(a);
-    $("#messages").append(li);
+    let template = $("#location-message-template").html();
+    let html = Mustache.render(template, {
+        from: data.from,
+        createdAt: formatTime,
+        url: data.url
+    });
+
+    $("#messages").append(html);
 })
