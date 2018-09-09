@@ -1,5 +1,18 @@
 const socket = io();
 
+const scrollToBottom = () => {
+    let messages = $("#messages");
+    let scrollHeight = messages.prop("scrollHeight");
+    let clientHeight = messages.prop("clientHeight");
+    let scrollTop = messages.prop("scrollTop");
+    let lastListHeight = messages.children("li:last-child").innerHeight();
+    let prevListHeight = messages.children("li:last-child").prev().innerHeight();
+
+    if(clientHeight + scrollTop + lastListHeight + prevListHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 socket.on("newMessage", (message) => {
     let formatTime = moment(message.createdAt).format("h:mm a");
     let template = $("#message-template").html();
@@ -9,6 +22,8 @@ socket.on("newMessage", (message) => {
         text: message.text
     });
     $("#messages").append(newMsg);
+
+    scrollToBottom();
 });
 
 $("#chat-form").on("submit", function (e) {
@@ -55,4 +70,6 @@ socket.on("newLocationMessage", (data) => {
     });
 
     $("#messages").append(html);
+
+    scrollToBottom();
 })
