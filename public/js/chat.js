@@ -53,7 +53,6 @@ $("#chat-form").on("submit", function (e) {
     let input = $("input");
 
     socket.emit("createMessage", {
-        from: "User",
         text: input.val()
     }, () => {
         input.val("");
