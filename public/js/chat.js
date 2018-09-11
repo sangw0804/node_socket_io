@@ -13,6 +13,28 @@ const scrollToBottom = () => {
     }
 }
 
+socket.on("connect", () => {
+    const params = deparam(location.search.slice(1));
+    console.log(params);
+    socket.emit("join", params, (err) => {
+        if(err) {
+            alert(err);
+            location.href = "/";
+        } else {
+            console.log("join room");
+        }
+    })
+});
+
+socket.on("updateUserList", (userNames) => {
+    let ol = $("<ol></ol>");
+    userNames.forEach((username) => {
+        ol.append($("<li></li>").text(username));
+    });
+
+    $("#users").html(ol);
+});
+
 socket.on("newMessage", (message) => {
     let formatTime = moment(message.createdAt).format("h:mm a");
     let template = $("#message-template").html();
